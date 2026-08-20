@@ -1,0 +1,42 @@
+# Classificador (TensorFlow/Keras) -- modelo, treino, avaliação, inferência, Grad-CAM
+tensorflow>=2.16
+scikit-learn>=1.4
+matplotlib>=3.8
+pillow>=10.2
+numpy>=1.26
+tqdm>=4.66
+opencv-python>=4.9  # leitura de frames de vídeo em src/inference.py --video
+
+# Detecção facial (TensorFlow)
+mtcnn>=1.0
+# obs: o pacote `mtcnn` já teve mudanças de API entre versões. Se ele não
+# importar corretamente na sua versão de TF/Keras, tente
+# `pip install --upgrade mtcnn`, ou troque por outro detector (ex:
+# retina-face, ou Haar cascade / DNN do OpenCV).
+
+# Legendas (passo 2) e extração de embeddings do Qwen3-VL (transfer
+# learning, src/qwen_features.py). Só disponível via PyTorch no Hugging
+# Face -- por isso essa etapa continua em PyTorch mesmo com o classificador
+# em TensorFlow.
+#
+# Qwen3-VL é recente; pode ser necessário instalar o transformers direto do
+# GitHub em vez da versão do PyPI:
+#   pip install git+https://github.com/huggingface/transformers
+torch>=2.2
+transformers>=4.57
+accelerate>=0.34
+sentencepiece>=0.2
+bitsandbytes>=0.43  # quantização 4-bit do Qwen3-VL -- necessário p/ GPUs de 8-16GB
+
+# Geração das imagens artificiais (passo 3), via API hospedada -- o
+# Qwen-Image (20B) não cabe em GPU de 8GB nem quantizado (~18GB só o
+# modelo em 4-bit). Instale UM dos dois (veja o cabeçalho de
+# data_generation/generate_fake_images.py para trocar entre eles):
+dashscope>=1.25   # opção 1: Alibaba Cloud Model Studio (oficial do Qwen-Image)
+fal-client>=0.5   # opção 2: fal.ai (cadastro mais simples)
+
+# diffusers/DiffusionPipeline (rodar Qwen-Image/FLUX 2 100% local) só é
+# necessário se você tiver uma GPU bem maior (24GB+) no futuro e quiser
+# voltar a gerar localmente em vez de via API. Não é usado neste projeto
+# enquanto a GPU for de 8-16GB.
+# diffusers>=0.30
